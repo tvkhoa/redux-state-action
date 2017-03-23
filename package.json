@@ -1,5 +1,5 @@
 {
-  "name": "state-action",
+  "name": "redux-state-action",
   "version": "1.0.0",
   "description": "Make your life easier",
   "main": "lib/index.min.js",
