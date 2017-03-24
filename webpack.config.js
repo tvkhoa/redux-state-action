@@ -17,7 +17,7 @@ if (env === 'build') {
     collections: true,
     paths: true,
   }));
-  outputFile = libraryName + '.min.js';
+  outputFile = libraryName + '.js';
 } else {
   outputFile = libraryName + '.js';
 }

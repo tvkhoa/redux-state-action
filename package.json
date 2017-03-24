@@ -1,8 +1,8 @@
 {
   "name": "redux-state-action",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Make your life easier",
-  "main": "lib/index.min.js",
+  "main": "lib/index.js",
   "author": "Khoa Thai",
   "license": "MIT",
   "repository": {
