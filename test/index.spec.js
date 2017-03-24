@@ -6,10 +6,12 @@ import makeStateAction from '../src';
 describe('makeStateAction', () => {
   describe('Type: Default as string', () => {
     const reducerPath = 'reducerPath';
-    const names = [
-      'varOne',
-      'varTwo',
-    ];
+    const names = {
+      varOne: 'string',
+      varTwo: {
+        type: 'string',
+      },
+    };
     const state = {
       [reducerPath]: {
         varOne: 'varOneText',
@@ -62,14 +64,11 @@ describe('makeStateAction', () => {
 
   describe('Type: number', () => {
     const reducerPath = 'reducerPath';
-    const names = [
-      'varOne',
-      'varTwo',
-    ];
-    const options = {
+    const names = {
       varOne: {
         type: 'number',
       },
+      varTwo: 'number',
     };
     const state = {
       [reducerPath]: {
@@ -86,7 +85,6 @@ describe('makeStateAction', () => {
     } = makeStateAction({
       reducerPath,
       names,
-      options,
     });
 
     it('should have reducers work right', () => {

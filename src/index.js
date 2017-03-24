@@ -1,5 +1,6 @@
 /* @flow */
 
+import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
 import {
@@ -7,6 +8,7 @@ import {
   get,
   keys,
   join,
+  isObject,
 } from 'lodash';
 import getDefaultValueByType from './default-values';
 import {
@@ -30,7 +32,7 @@ type HandlersType = {
 
 type SelectorType = (rootState?: {}) => DefaultValueType;
 type ActionCreatorType = (value?: DefaultValueType) => ActionType;
-type OptionType = {
+type OptionType = | TypesValue | {
   type?: TypesValue,
   defaultValue?: DefaultValueType,
   reducerHandlers?: HandlersType,
@@ -38,8 +40,7 @@ type OptionType = {
 
 type ParamType = {
   reducerPath: string,
-  names: string[],
-  options?: {[name:string]: OptionType},
+  names: {[name:string]: OptionType},
 };
 type ResultType = {
   actionTypes: {[name:string]: string},
@@ -48,15 +49,22 @@ type ResultType = {
   selectors: {[name:string]: SelectorType},
 }
 
+const getOption = (nameValue) => {
+  if (isObject(nameValue)) {
+    return nameValue;
+  }
+  return {
+    type: nameValue,
+  };
+};
 
 const makeStateAction = ({
   reducerPath,
   names,
-  options = {},
 } : ParamType): ResultType => {
   const domainSelector = (state) => get(state, reducerPath);
-  const results = reduce(names, (result, name) => {
-    const option = get(options, name, {});
+  const results = reduce(names, (result, nameValue, name) => {
+    const option = getOption(nameValue);
 
     const type = get(option, 'type', 'string');
     const defaultValue = get(option, 'defaultValue', getDefaultValueByType(type));
@@ -170,8 +178,15 @@ const makeStateAction = ({
     return selector;
   };
 
+  const branch = {
+    [reducerPath]: combineReducers({
+      ...results.reducers,
+    }),
+  };
+
   return {
-    ...results,
+    reducers: results.reducers,
+    branch,
     actionTypeFactory,
     actionCreatorFactory,
     selectorFactory,
