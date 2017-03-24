@@ -3,20 +3,20 @@
 const webpack = require('webpack');
 const path = require('path');
 const env = require('yargs').argv.env; // use --env with webpack 2
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+// const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+//
+// const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const libraryName = 'index';
 
 const plugins = [];
 let outputFile;
 
 if (env === 'build') {
-  plugins.push(new UglifyJsPlugin({ minimize: true }));
-  plugins.push(new LodashModuleReplacementPlugin({
-    collections: true,
-    paths: true,
-  }));
+  // plugins.push(new UglifyJsPlugin({ minimize: true }));
+  // plugins.push(new LodashModuleReplacementPlugin({
+  //   collections: true,
+  //   paths: true,
+  // }));
   outputFile = libraryName + '.js';
 } else {
   outputFile = libraryName + '.js';

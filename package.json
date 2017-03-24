@@ -1,6 +1,6 @@
 {
   "name": "redux-state-action",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "Make your life easier",
   "main": "lib/index.js",
   "author": "Khoa Thai",
