@@ -3,13 +3,11 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
-import {
-  reduce,
-  get,
-  keys,
-  join,
-  isObject,
-} from 'lodash';
+import get from 'lodash/get';
+import reduce from 'lodash/reduce';
+import keys from 'lodash/keys';
+import join from 'lodash/join';
+import isObject from 'lodash/isObject';
 import getDefaultValueByType from './default-values';
 import {
   getActionsDataSet,

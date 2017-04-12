@@ -1,7 +1,5 @@
 import { createAction } from 'redux-actions';
-import {
-  get,
-} from 'lodash';
+import get from 'lodash/get';
 
 export default ({
   reducerPath,

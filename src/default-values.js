@@ -1,6 +1,4 @@
-import {
-  get,
-} from 'lodash';
+import get from 'lodash/get';
 
 const getDefaultValueByType = (type) => {
   const values = {

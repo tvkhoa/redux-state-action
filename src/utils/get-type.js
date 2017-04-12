@@ -1,10 +1,8 @@
-import {
-  isNumber,
-  isString,
-  isBoolean,
-  isArray,
-  isObject,
-} from 'lodash';
+import isNumber from 'lodash/isNumber';
+import isString from 'lodash/isString';
+import isBoolean from 'lodash/isBoolean';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 
 const getType = (value) => {
   if (isNumber(value)) {

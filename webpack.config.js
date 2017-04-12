@@ -3,32 +3,15 @@
 const webpack = require('webpack');
 const path = require('path');
 const env = require('yargs').argv.env; // use --env with webpack 2
-// const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-//
-// const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-const libraryName = 'index';
 
-const plugins = [];
-let outputFile;
-
-if (env === 'build') {
-  // plugins.push(new UglifyJsPlugin({ minimize: true }));
-  // plugins.push(new LodashModuleReplacementPlugin({
-  //   collections: true,
-  //   paths: true,
-  // }));
-  outputFile = libraryName + '.js';
-} else {
-  outputFile = libraryName + '.js';
-}
 
 const config = {
   entry: __dirname + '/src/index.js',
   devtool: 'source-map',
   output: {
     path: __dirname + '/lib',
-    filename: outputFile,
-    library: libraryName,
+    filename: 'index.js',
+    library: 'stateAction',
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
@@ -53,7 +36,36 @@ const config = {
     ],
     extensions: ['.json', '.js'],
   },
-  plugins: plugins,
+  externals: {
+    lodash: {
+      root: '_',
+      commonjs2: 'lodash',
+      commonjs: 'lodash',
+      amd: 'lodash',
+      umd: 'lodash',
+    },
+    redux: {
+      root: 'redux',
+      commonjs2: 'redux',
+      commonjs: 'redux',
+      amd: 'redux',
+      umd: 'redux',
+    },
+    'redux-actions': {
+      root: 'ReduxAction',
+      commonjs2: 'redux-actions',
+      commonjs: 'redux-actions',
+      amd: 'redux-actions',
+      umd: 'redux-actions',
+    },
+    reselect: {
+      root: 'reselect',
+      commonjs2: 'reselect',
+      commonjs: 'reselect',
+      amd: 'reselect',
+      umd: 'reselect',
+    },
+  },
 };
 
 module.exports = config;
