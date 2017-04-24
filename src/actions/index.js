@@ -1,6 +1,11 @@
-import get from 'lodash/get';
-import mapValues from 'lodash/mapValues';
-import reduce from 'lodash/reduce';
+// import get from 'lodash/get';
+// import mapValues from 'lodash/mapValues';
+// import reduce from 'lodash/reduce';
+import {
+  get,
+  mapValues,
+  reduce,
+} from 'lodash';
 import shared from './shared';
 import number from './number';
 import boolean from './boolean';

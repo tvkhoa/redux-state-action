@@ -1,5 +1,8 @@
 import { createAction } from 'redux-actions';
-import get from 'lodash/get';
+// import get from 'lodash/get';
+import {
+  get,
+} from 'lodash';
 import getType from '../../utils/get-type';
 
 export default ({

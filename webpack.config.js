@@ -51,20 +51,6 @@ const config = {
       amd: 'redux',
       umd: 'redux',
     },
-    'redux-actions': {
-      root: 'ReduxAction',
-      commonjs2: 'redux-actions',
-      commonjs: 'redux-actions',
-      amd: 'redux-actions',
-      umd: 'redux-actions',
-    },
-    reselect: {
-      root: 'reselect',
-      commonjs2: 'reselect',
-      commonjs: 'reselect',
-      amd: 'reselect',
-      umd: 'reselect',
-    },
   },
 };
 

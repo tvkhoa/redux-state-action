@@ -1,7 +1,12 @@
 import { createAction } from 'redux-actions';
-import get from 'lodash/get';
-import filter from 'lodash/filter';
-import matches from 'lodash/matches';
+// import get from 'lodash/get';
+// import filter from 'lodash/filter';
+// import matches from 'lodash/matches';
+import {
+  get,
+  filter,
+  matches,
+} from 'lodash';
 
 import getType from '../../utils/get-type';
 

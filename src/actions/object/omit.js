@@ -1,6 +1,10 @@
 import { createAction } from 'redux-actions';
-import get from 'lodash/get';
-import omit from 'lodash/omit';
+// import get from 'lodash/get';
+// import omit from 'lodash/omit';
+import {
+  get,
+  omit,
+} from 'lodash';
 import getType from '../../utils/get-type';
 
 export default ({

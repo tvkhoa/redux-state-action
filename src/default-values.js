@@ -1,4 +1,7 @@
-import get from 'lodash/get';
+// import get from 'lodash/get';
+import {
+  get,
+} from 'lodash';
 
 const getDefaultValueByType = (type) => {
   const values = {
