@@ -3,18 +3,16 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
-// import get from 'lodash/get';
-// import reduce from 'lodash/reduce';
-// import keys from 'lodash/keys';
-// import join from 'lodash/join';
-// import isObject from 'lodash/isObject';
+
 import {
   get,
   reduce,
+  isObject,
   keys,
   join,
-  isObject,
-} from 'lodash';
+} from './utils/fp';
+
+
 import getDefaultValueByType from './default-values';
 import {
   getActionsDataSet,
@@ -36,7 +34,6 @@ type HandlersType = {
 };
 
 type SelectorType = (rootState?: {}) => DefaultValueType;
-type ActionCreatorType = (value?: DefaultValueType) => ActionType;
 type OptionType = | TypesValue | {
   type?: TypesValue,
   defaultValue?: DefaultValueType,
@@ -47,12 +44,6 @@ type ParamType = {
   reducerPath: string,
   names: {[name:string]: OptionType},
 };
-type ResultType = {
-  actionTypes: {[name:string]: string},
-  reducers: {[name:string]: HandlerType},
-  actionCreators: {[name:string]: ActionCreatorType},
-  selectors: {[name:string]: SelectorType},
-}
 
 const getOption = (nameValue) => {
   if (isObject(nameValue)) {
@@ -66,116 +57,105 @@ const getOption = (nameValue) => {
 const makeStateAction = ({
   reducerPath,
   names,
-} : ParamType): ResultType => {
-  const domainSelector = (state) => get(state, reducerPath);
-  const results = reduce(names, (result, nameValue, name) => {
-    const option = getOption(nameValue);
+} : ParamType) => {
+  const domainSelector = (state) => get(reducerPath)(state);
+  const results = reduce(
+    (result, nameValue, name) => {
+      const option = getOption(nameValue);
 
-    const type = get(option, 'type', 'string');
-    const defaultValue = get(option, 'defaultValue', getDefaultValueByType(type));
-    const reducerHandlers = get(option, 'reducerHandlers', {});
+      const type = get('type', 'string')(option);
+      const defaultValue = get('defaultValue', getDefaultValueByType(type))(option);
+      const reducerHandlers = get('reducerHandlers', {})(option);
 
-    const actionsDataSet = getActionsDataSet({
-      name,
-      type,
-      reducerPath,
-      defaultValue,
-    });
+      const actionsDataSet = getActionsDataSet({
+        name,
+        type,
+        reducerPath,
+        defaultValue,
+      });
 
-    // actionsDataSet = {
-    //   set: {
-    //     actionCreator,
-    //     actionType,
-    //     reducerHandler,
-    //   },
-    //   update: {
-    //     actionCreator,
-    //     actionType,
-    //     reducerHandler,
-    //   }
-    // }
+      const actionCreatorSet = getActionCreatorSet(actionsDataSet);
+      const actionTypeSet = getActionTypeSet(actionsDataSet);
+      const reducerHandlerSet = getReducerHandlerSet(actionsDataSet);
 
-    const actionCreatorSet = getActionCreatorSet(actionsDataSet);
-    const actionTypeSet = getActionTypeSet(actionsDataSet);
-    const reducerHandlerSet = getReducerHandlerSet(actionsDataSet);
+      const typeReducerHandlers = combineReducerHanlders(reducerHandlerSet);
 
-    const typeReducerHandlers = combineReducerHanlders(reducerHandlerSet);
+      const reducer = handleActions({
+        ...typeReducerHandlers,
+        ...reducerHandlers,
+      }, defaultValue);
 
-    const reducer = handleActions({
-      ...typeReducerHandlers,
-      ...reducerHandlers,
-    }, defaultValue);
+      const selector = createSelector(
+        domainSelector,
+        (domain) => get(`${name}`)(domain),
+      );
 
-    const selector = createSelector(
-      domainSelector,
-      (domain) => get(domain, `${name}`),
-    );
+      const reducers = {
+        ...result.reducers,
+        [name]: reducer,
+      };
 
-    const reducers = {
-      ...result.reducers,
-      [name]: reducer,
-    };
+      const actionTypes = {
+        ...result.actionTypes,
+        [name]: actionTypeSet,
+      };
 
-    const actionTypes = {
-      ...result.actionTypes,
-      [name]: actionTypeSet,
-    };
+      const actionCreators = {
+        ...result.actionCreators,
+        [name]: actionCreatorSet,
+      };
 
-    const actionCreators = {
-      ...result.actionCreators,
-      [name]: actionCreatorSet,
-    };
+      const selectors = {
+        ...result.selectors,
+        [name]: selector,
+      };
 
-    const selectors = {
-      ...result.selectors,
-      [name]: selector,
-    };
+      return {
+        reducers,
+        actionTypes,
+        actionCreators,
+        selectors,
+      };
+    }, {
+      reducers: {},
+      actionTypes: {},
+      actionCreators: {},
+      selectors: {},
+    }
+  )(names);
 
-    return {
-      reducers,
-      actionTypes,
-      actionCreators,
-      selectors,
-    };
-  }, {
-    reducers: {},
-    actionTypes: {},
-    actionCreators: {},
-    selectors: {},
-  });
-
-  const actionTypeFactory = (varName: string, type = 'set') : ActionCreatorType => {
-    const actionTypesSet = get(results.actionTypes, varName);
+  const actionTypeFactory = (varName: string, type: string = 'set') => {
+    const actionTypesSet = get(varName)(results.actionTypes);
     if (actionTypesSet === undefined) {
       console.warn('Cannot find actionType for', varName, '. Please check your code');
       return undefined;
     }
-    const actionType = get(actionTypesSet, type);
+    const actionType = get(type)(actionTypesSet);
     if (actionType === undefined) {
-      const supportedTypes = join(keys(actionTypesSet), ', ');
+      const supportedTypes = join(', ', keys(actionTypesSet));
       console.warn(`actionTypes type for ${reducerPath}.${varName} is just support:`, supportedTypes);
       return undefined;
     }
     return actionType;
   };
 
-  const actionCreatorFactory = (varName: string, type = 'set') : ActionCreatorType => {
-    const actionCreatorsSet = get(results.actionCreators, varName);
+  const actionCreatorFactory = (varName: string, type : string = 'set') => {
+    const actionCreatorsSet = get(varName)(results.actionCreators);
     if (actionCreatorsSet === undefined) {
       console.warn('Cannot find actionCreator for', varName, '. Please check your code');
       return undefined;
     }
-    const actionCreator = get(actionCreatorsSet, type);
+    const actionCreator = get(type)(actionCreatorsSet);
     if (actionCreator === undefined) {
-      const supportedTypes = join(keys(actionCreatorsSet), ', ');
+      const supportedTypes = join(', ', keys(actionCreatorsSet));
       console.warn(`actionCreator type for ${reducerPath}.${varName} is just support:`, supportedTypes);
       return undefined;
     }
     return actionCreator;
   };
 
-  const selectorFactory = (varName: string) : SelectorType => {
-    const selector = get(results.selectors, varName);
+  const selectorFactory = (varName: string) : ?SelectorType => {
+    const selector = get(varName)(results.selectors);
     if (selector === undefined) {
       console.warn('Cannot find selector for', varName, '. Please check your code');
       return undefined;

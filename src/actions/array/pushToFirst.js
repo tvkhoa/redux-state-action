@@ -1,8 +1,7 @@
 import { createAction } from 'redux-actions';
-// import get from 'lodash/get';
 import {
   get,
-} from 'lodash';
+} from '../../utils/fp';
 
 export default ({
   reducerPath,
@@ -13,7 +12,7 @@ export default ({
   const actionCreator = createAction(actionType);
   const reducerHandler = {
     [actionType]: (state = [], action) => ([
-      get(action, 'payload'),
+      get('payload')(action),
       ...state,
     ]),
   };

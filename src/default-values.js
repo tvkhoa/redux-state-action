@@ -1,7 +1,6 @@
-// import get from 'lodash/get';
 import {
   get,
-} from 'lodash';
+} from './utils/fp';
 
 const getDefaultValueByType = (type) => {
   const values = {
@@ -12,7 +11,7 @@ const getDefaultValueByType = (type) => {
     object: {},
   };
 
-  return get(values, type, '');
+  return get(type, '')(values);
 };
 
 export default getDefaultValueByType;

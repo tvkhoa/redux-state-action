@@ -1,18 +1,13 @@
-// import isNumber from 'lodash/isNumber';
-// import isString from 'lodash/isString';
-// import isBoolean from 'lodash/isBoolean';
-// import isArray from 'lodash/isArray';
-// import isObject from 'lodash/isObject';
 import {
-  isNumber,
+  isValidNumber,
   isString,
   isBoolean,
   isArray,
   isObject,
-} from 'lodash';
+} from './fp';
 
 const getType = (value) => {
-  if (isNumber(value)) {
+  if (isValidNumber(value)) {
     return 'number';
   }
   if (isBoolean(value)) {

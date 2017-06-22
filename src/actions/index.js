@@ -1,11 +1,8 @@
-// import get from 'lodash/get';
-// import mapValues from 'lodash/mapValues';
-// import reduce from 'lodash/reduce';
 import {
   get,
   mapValues,
   reduce,
-} from 'lodash';
+} from '../utils/fp';
 import shared from './shared';
 import number from './number';
 import boolean from './boolean';
@@ -35,7 +32,7 @@ export const getActionHandlersByType = (type) => {
     },
   };
 
-  return get(values, type, shared);
+  return get(type, shared)(values);
 };
 
 
@@ -46,27 +43,24 @@ export const getActionsDataSet = ({
   defaultValue,
 }) => {
   const actions = getActionHandlersByType(type);
-  return mapValues(actions, (actionHandler) => actionHandler({
+  return mapValues((actionHandler) => actionHandler({
     type,
     reducerPath,
     name,
     defaultValue,
-  }));
+  }))(actions);
 };
 
-// Dont ask me why don't I use lodash fp.
-// I like this way, it's enought
-export const getActionCreatorSet = (actionDataset) => mapValues(actionDataset, 'actionCreator');
-export const getActionTypeSet = (actionDataset) => mapValues(actionDataset, 'actionType');
-export const getReducerHandlerSet = (actionDataset) => mapValues(actionDataset, 'reducerHandler');
-export const combineReducerHanlders = (reducerHandlerSet) =>
-  reduce(
-    reducerHandlerSet,
-    (result, value) => ({
-      ...result,
-      ...value,
-    }),
-    {},
-  );
+
+export const getActionCreatorSet = mapValues('actionCreator');
+export const getActionTypeSet = mapValues('actionType');
+export const getReducerHandlerSet = mapValues('reducerHandler');
+export const combineReducerHanlders = reduce(
+  (result, value) => ({
+    ...result,
+    ...value,
+  }),
+  {},
+);
 
 export default getActionsDataSet;

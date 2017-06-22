@@ -1,15 +1,10 @@
 import { createAction } from 'redux-actions';
-// import get from 'lodash/get';
-// import without from 'lodash/without';
-// import filter from 'lodash/filter';
-// import matches from 'lodash/matches';
 import {
   get,
   without,
   filter,
   matches,
-} from 'lodash';
-
+} from '../../utils/fp';
 
 import getType from '../../utils/get-type';
 
@@ -22,15 +17,15 @@ export default ({
   const actionCreator = createAction(actionType);
   const reducerHandler = {
     [actionType]: (state = [], action) => {
-      const condition = get(action, 'payload');
+      const condition = get('payload')(action);
       const conditionType = getType(condition);
       if (conditionType === 'object') {
-        return filter(state, (item) => !matches(condition)(item));
+        return filter((item) => !matches(condition)(item))(state);
       }
       if (conditionType === 'array') {
-        return without(state, ...condition);
+        return without(...condition)(state);
       }
-      return without(state, condition);
+      return without(condition)(state);
     },
   };
 

@@ -1,12 +1,9 @@
 import { createAction } from 'redux-actions';
-// import get from 'lodash/get';
-// import filter from 'lodash/filter';
-// import matches from 'lodash/matches';
 import {
   get,
   filter,
   matches,
-} from 'lodash';
+} from '../../utils/fp';
 
 import getType from '../../utils/get-type';
 
@@ -19,10 +16,10 @@ export default ({
   const actionCreator = createAction(actionType);
   const reducerHandler = {
     [actionType]: (state = [], action) => {
-      const condition = get(action, 'payload');
+      const condition = get('payload')(action);
       const conditionType = getType(condition);
       if (conditionType === 'object') {
-        return filter(state, matches(condition));
+        return filter(matches(condition))(state);
       }
       console.warn('You may not need to use filter');
       console.warn('Just recommend to use filter with array of object');
