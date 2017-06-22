@@ -11,7 +11,7 @@ export default ({
   const actionType = `${reducerPath}/INCREASE_${name}`;
   const actionCreator = createAction(actionType);
   const reducerHandler = {
-    [actionType]: (state, action) => state + get(action, 'payload', 0),
+    [actionType]: (state, action) => state + get(action, 'payload', 1),
   };
 
   return {
